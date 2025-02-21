@@ -1,0 +1,33 @@
+document.addEventListener("DOMContentLoaded", function () {
+    var variantSelect = document.querySelector("select[data-product-attribute]");
+    var unavailableMessageClass = "alertBox-message"; // Class for unavailable message
+
+    if (!variantSelect) {
+        console.error("Variant dropdown not found.");
+        return;
+    }
+
+    function checkAndHideUnavailableVariant() {
+        var unavailableMessage = document.querySelector("." + unavailableMessageClass);
+        
+        if (unavailableMessage) {
+            var messageText = unavailableMessage.textContent;
+            if (messageText.indexOf("The selected product combination is currently unavailable") !== -1) {
+                var selectedOption = variantSelect.options[variantSelect.selectedIndex];
+                if (selectedOption) {
+                    console.log("Hiding Unavailable Variant: " + selectedOption.textContent);
+                    selectedOption.style.display = "none";
+                    variantSelect.selectedIndex = 0; // Reset selection
+                }
+            }
+        }
+    }
+
+    // Run when the page loads
+    checkAndHideUnavailableVariant();
+
+    // Watch for changes in the variant dropdown
+    variantSelect.addEventListener("change", function () {
+        setTimeout(checkAndHideUnavailableVariant, 500); // Small delay to let BigCommerce update the message
+    });
+});
